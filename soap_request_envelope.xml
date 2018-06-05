@@ -1,0 +1,24 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://serviceplatformen.dk/xml/wsdl/soap11/CprService/2/" xmlns:ns1="http://serviceplatformen.dk/xml/schemas/InvocationContext/1/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <ns:callGCTPCheckServiceRequest>
+            <ns1:InvocationContext>
+                <ns1:ServiceAgreementUUID>{{ service_agreement }}</ns1:ServiceAgreementUUID>
+                <ns1:UserSystemUUID>{{ system }}</ns1:UserSystemUUID>
+                <ns1:UserUUID>{{ user }}</ns1:UserUUID>
+                <ns1:ServiceUUID>{{ service }}</ns1:ServiceUUID>
+            </ns1:InvocationContext>
+            <ns:gctpMessage>
+                <![CDATA[<Gctp v="1.0">
+			        <System r="CprSoeg">
+			            <Service r="ADRSOG1">
+			                <CprServiceHeader r="ADRSOG1">
+			                    <Key>{{ search_param_fields }}</Key>
+		                 	</CprServiceHeader>
+			            </Service>
+			        </System>
+			    </Gctp>]]>
+            </ns:gctpMessage>
+        </ns:callGCTPCheckServiceRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
