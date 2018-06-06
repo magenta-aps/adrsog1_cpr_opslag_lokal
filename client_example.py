@@ -9,7 +9,10 @@
 
 import settings
 
-from adrog1_cpr_opslag_lokal import get_person_numbers_from_address
+from adrog1_cpr_opslag_lokal import (
+    get_person_numbers_from_address,
+    get_persons_from_address
+)
 
 dependencies = {
     'service_endpoint': settings.SP_SERVICE_ENDPOINT,
@@ -22,17 +25,40 @@ dependencies = {
 }
 
 test_address = {
-    'street_code': '',
-    'house_no': '',
-    'zip_code': '',
+    'street_code': '3611',
+    'house_no': '15',
+    'zip_code': '8240',
     'floor': '',
     'door': ''
 }
 
-# Returns a list
-person_numbers_from_adress = get_person_numbers_from_address(
-    dependencies_dict=dependencies,
-    address_dict=test_address
-)
 
-print(person_numbers_from_adress)
+# adrs01_json_response = get_persons_from_address(
+#     dependencies_dict=dependencies,
+#     address_dict=test_address,
+#     response_format='json'
+# )
+#
+# print(adrs01_json_response)
+
+
+# adrs01_xml_response = get_persons_from_address(
+#     dependencies_dict=dependencies,
+#     address_dict=test_address,
+#     response_format='xml'
+# )
+# test_output = open('output_test.xml', 'w')
+# test_output.write(adrs01_xml_response)
+#
+# Pretty print XML
+# 1) $ sudo apt install xmllint
+# 2) $ xmllint --format output_test.xml
+
+
+# Returns a list
+# person_numbers_from_adress = get_person_numbers_from_address(
+#     dependencies_dict=dependencies,
+#     address_dict=test_address
+# )
+#
+# print(person_numbers_from_adress)

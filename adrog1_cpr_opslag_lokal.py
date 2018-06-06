@@ -8,41 +8,51 @@
 #
 
 import html
+import json
 import requests
 import settings
+import xmltodict
 import lxml.etree as ET
 
 from jinja2 import Template
 
 # TODO: return the raw XML, or prettyfied JSON.
-# get_persons_from_address(dependencies_dict, address_dict, response_format):
-#
-#   if validate_address(address_dict):
-#
-#       if response_format = 'json':
-#
-#           return json
-#
-#       elif response_format = 'xml':
-#
-#           return xml
-#
-#       else:
-#
-#           return 'ADRSOG1 Response Error Format'
+
+
+def get_persons_from_address(dependencies_dict, address_dict, response_format):
+
+    if validate_address(address_dict):
+
+        adrog1_xml_response = call_gctp_service_adrsog1(
+            dependencies_dict=dependencies_dict,
+            address_dict=address_dict
+        )
+
+        if response_format == 'json':
+
+            adrog1_response_dict = xmltodict.parse(adrog1_xml_response)
+            return json.dumps(adrog1_response_dict, sort_keys=True, indent=4)
+
+        elif response_format == 'xml':
+
+            return adrog1_xml_response
+
+        else:
+
+            return 'ADRSOG1 Response Format Error'
 
 
 def get_person_numbers_from_address(dependencies_dict, address_dict):
     """The function returns person numbers from a given address."""
 
-    address_xml_data = call_gctp_service_adrsog1(
+    adrog1_response = call_gctp_service_adrsog1(
         dependencies_dict=dependencies_dict,
         address_dict=address_dict
     )
 
-    # person_numbers = filter_person_numbers_from_address(address_xml_data)
+    person_numbers = filter_person_numbers_from_address(adrog1_response)
 
-    return address_xml_data
+    return person_numbers
 
 
 # TODO: Optimize
@@ -71,8 +81,6 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
             search_param_fields=gctp_elements
         )
 
-        print('TEMPLATE:\n{}'.format(populated_template))
-
         # response will throw UnicodeEncodeError otherwise(?).
         latin_1_encoded_xml = populated_template.encode('latin-1')
 
@@ -87,6 +95,7 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
         return persons_on_address_xml
 
     else:
+
         return {
             'Error': 'Something is wrong with address:\t{}'.format(
                 address_dict
@@ -128,7 +137,7 @@ def filter_person_numbers_from_address(address):
         for field in row:
             field_dict = field.attrib
             temp_dict[field_dict.get('r')] = field_dict.get('v')
-        if temp_dict.get('CNVN_STATUS') == '01':
+        # if temp_dict.get('CNVN_STATUS') == '01':
             person_numbers.append(temp_dict.get('PNR'))
     return person_numbers
 
