@@ -1,3 +1,3 @@
 # Explanation Pending ...
 
-## The application is functioning, but it eeds a make-over :)
+## The application is functioning, but it needs a make-over :)
