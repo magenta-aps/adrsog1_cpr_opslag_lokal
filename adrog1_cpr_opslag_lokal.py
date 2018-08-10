@@ -136,7 +136,6 @@ def filter_person_numbers_from_address(address):
         for field in row:
             field_dict = field.attrib
             temp_dict[field_dict.get('r')] = field_dict.get('v')
-        if temp_dict.get('CNVN_STATUS') == '01':
             person_numbers.append(temp_dict.get('PNR'))
     return person_numbers
 
@@ -146,7 +145,7 @@ def generate_gctp_field_elements(address_dict):
     address which contain data.
     return : string."""
 
-    street_code = format_street_code_for_adrsog1(address_dict['street_code'])
+    street_code = padding_prefix_zeros(address_dict['street_code'], 4)
     fields = '<Field r="VEJK" v="' + street_code + '"/>'
 
     house_no = format_house_number_for_adrsog1(address_dict['house_no'])
@@ -168,6 +167,18 @@ def generate_gctp_field_elements(address_dict):
 # TODO: Make one generic function that takes len(input) as secondary paramater.
 # Lengths are defined here:
 # https://cprdocs.atlassian.net/wiki/download/attachments/51156205/Adresses%C3%B8gning%20-%20ADRSOG1.pdf?api=v2
+
+def padding_prefix_zeros(street_attr, street_attr_len):
+    if street_attr_len > 0 and street_attr_len < 5:
+        diff = street_attr_len - street_attr_len
+        for i in range(diff):
+            street_attr_len = '0' + street_attr_len
+        return street_attr_len
+    else:
+        return 'street_attr_len was: {}. 5 > street_attr_len > 0'.format(
+            street_attr_len
+        )
+
 
 def format_street_code_for_adrsog1(street_code):
     length = len(street_code)
