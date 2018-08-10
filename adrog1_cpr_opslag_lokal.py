@@ -121,7 +121,6 @@ def validate_address(address_dict):
     return validate_address
 
 
-# TODO: Maybe convert to a dict first...?
 def filter_person_numbers_from_address(address):
     """Parses adrsog1 object to a dict, and appends a person_number(PNR) to a
     list ONLY if the civilian status of the citizen equals '01'.
@@ -137,7 +136,7 @@ def filter_person_numbers_from_address(address):
         for field in row:
             field_dict = field.attrib
             temp_dict[field_dict.get('r')] = field_dict.get('v')
-        # if temp_dict.get('CNVN_STATUS') == '01':
+        if temp_dict.get('CNVN_STATUS') == '01':
             person_numbers.append(temp_dict.get('PNR'))
     return person_numbers
 
