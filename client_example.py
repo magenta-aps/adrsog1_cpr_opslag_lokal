@@ -33,13 +33,13 @@ test_address = {
 }
 
 
-# adrs01_json_response = get_persons_from_address(
-#     dependencies_dict=dependencies,
-#     address_dict=test_address,
-#     response_format='json'
-# )
-#
-# print(adrs01_json_response)
+adrs01_json_response = get_persons_from_address(
+    dependencies_dict=dependencies,
+    address_dict=test_address,
+    response_format='json'
+)
+
+print(adrs01_json_response)
 
 
 # adrs01_xml_response = get_persons_from_address(
@@ -49,10 +49,10 @@ test_address = {
 # )
 # test_output = open('output_test.xml', 'w')
 # test_output.write(adrs01_xml_response)
-#
+
 # Pretty print XML
 # 1) $ sudo apt install xmllint
-# 2) $ xmllint --format output_test.xml
+# 2) $ xmllint -format output_test.xml
 
 
 # Returns a list
