@@ -81,6 +81,8 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
             search_param_fields=gctp_elements
         )
 
+        # print('TEMPLATE:\n{}'.format(populated_template))
+
         # response will throw UnicodeEncodeError otherwise(?).
         latin_1_encoded_xml = populated_template.encode('latin-1')
 
