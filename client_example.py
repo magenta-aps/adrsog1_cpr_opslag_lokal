@@ -1,5 +1,3 @@
-# -- coding: utf-8 --
-#
 # Copyright (c) 2017, Magenta ApS
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -17,6 +15,7 @@ from adrog1_cpr_opslag_lokal import (
 dependencies = {
     'service_endpoint': settings.SP_SERVICE_ENDPOINT,
     'certificate': settings.SP_CERTIFICATE,
+    'cert_passphrase': settings.SP_CERTIFICATE_PASSPHRASE,
     'soap_request_envelope': settings.SP_SOAP_REQUEST_ENVELOPE,
     'system': settings.SP_SYSTEM,
     'user': settings.SP_USER,
@@ -24,22 +23,24 @@ dependencies = {
     'service': settings.SP_SERVICE
 }
 
+
 test_address = {
-    'street_code': '3611',
-    'house_no': '15',
-    'zip_code': '8240',
-    'floor': '',
-    'door': ''
+    'street_code': '0866',
+    'house_no': '095',
+    'zip_code': '9240',
+    'floor': '01',
+    'door': 'mf'
 }
 
-
+# Get a list of test-cpr numbers which exists the demo environment.
+# Should return ['0707614285', '0103922852']
 adrs01_json_response = get_persons_from_address(
     dependencies_dict=dependencies,
     address_dict=test_address,
-    response_format='json'
+    response_format='xml'
 )
 
-print(adrs01_json_response)
+#print(adrs01_json_response)
 
 
 # adrs01_xml_response = get_persons_from_address(

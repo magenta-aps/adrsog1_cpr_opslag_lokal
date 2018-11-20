@@ -1,5 +1,3 @@
-# -- coding: utf-8 --
-#
 # Copyright (c) 2017, Magenta ApS
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -18,6 +16,8 @@ load_dotenv(dotenv_path)
 SP_SERVICE_ENDPOINT = os.environ.get('SP_SERVICE_ENDPOINT')
 
 SP_CERTIFICATE = os.environ.get('SP_CERTIFICATE')
+
+SP_CERTIFICATE_PASSPHRASE = os.environ.get('SP_CERTIFICATE_PASSPHRASE')
 
 SP_SOAP_REQUEST_ENVELOPE = os.environ.get('SP_SOAP_REQUEST_ENVELOPE')
 

@@ -15,6 +15,7 @@ import xmltodict
 import lxml.etree as ET
 
 from jinja2 import Template
+from requests_pkcs12 import post
 
 # TODO: return the raw XML, or prettyfied JSON.
 
@@ -81,20 +82,20 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
             search_param_fields=gctp_elements
         )
 
-        # print('TEMPLATE:\n{}'.format(populated_template))
-
         # response will throw UnicodeEncodeError otherwise(?).
         latin_1_encoded_xml = populated_template.encode('latin-1')
 
-        response = requests.post(
-            data=latin_1_encoded_xml,
-            url=dependencies_dict.get('service_endpoint'),
-            cert=dependencies_dict.get('certificate')
-        )
+        response = post(
+                dependencies_dict.get('service_endpoint'), 
+                pkcs12_filename=dependencies_dict.get('certificate'),
+                pkcs12_password=dependencies_dict.get('cert_passphrase'),
+                data=latin_1_encoded_xml,
+                )
 
         persons_on_address_xml = html.unescape(response.text)
+        print(html.unescape(response.text))
 
-        return persons_on_address_xml
+        #return persons_on_address_xml
 
     else:
 
@@ -105,9 +106,8 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
         }
 
 
-# NOTE: This validation is just an assumption. May need some testing
 def validate_address(address_dict):
-    """Checks if minimum required address attributes are present in the dict.
+    """Checks if minimum required address attributes are present in address_dict.
     return : boolean"""
 
     validate_address = False
@@ -143,87 +143,37 @@ def filter_person_numbers_from_address(address):
 
 
 def generate_gctp_field_elements(address_dict):
-    """ Dynamically builds a string of gctp xml field elements from the keys in
+    """Dynamically builds a string of gctp xml field elements from the keys in
     address which contain data.
     return : string."""
 
-    street_code = padding_prefix_zeros(address_dict['street_code'], 4)
+    street_code = padding_prefix_zeroes(address_dict['street_code'], 4)
     fields = '<Field r="VEJK" v="' + street_code + '"/>'
 
-    house_no = format_house_number_for_adrsog1(address_dict['house_no'])
+    house_no = padding_prefix_zeroes(address_dict['house_no'], 4)
     fields += '<Field r="HNR" v="' + house_no + '"/>'
 
     fields += '<Field r="POST" v="' + address_dict['zip_code'] + '"/>'
 
     if address_dict['floor']:
-        floor = format_floor_for_adrsog1(address_dict['floor'])
+        floor = padding_prefix_zeroes(address_dict['floor'], 2)
         fields += '<Field r="ETAG" v="' + floor + '"/>'
 
     if address_dict['door']:
-        door = format_door_for_adrsog1(address_dict['door'])
+        door = padding_prefix_zeroes(address_dict['door'], 4)
         fields += '<Field r="SIDO" v="' + door + '"/>'
 
     return fields
 
 
-# TODO: Make one generic function that takes len(input) as secondary paramater.
-# Lengths are defined here:
-# https://cprdocs.atlassian.net/wiki/download/attachments/51156205/Adresses%C3%B8gning%20-%20ADRSOG1.pdf?api=v2
-
-def padding_prefix_zeros(street_attr, street_attr_len):
+def padding_prefix_zeroes(street_attr, street_attr_len):
+    """Dynamically prefixes address a given attribute with zeroes."""
     if street_attr_len > 0 and street_attr_len < 5:
-        diff = street_attr_len - street_attr_len
+        diff = street_attr_len - len(street_attr)
         for i in range(diff):
-            street_attr_len = '0' + street_attr_len
-        return street_attr_len
+            street_attr = '0' + street_attr
+        return street_attr
     else:
         return 'street_attr_len was: {}. 5 > street_attr_len > 0'.format(
             street_attr_len
         )
-
-
-def format_street_code_for_adrsog1(street_code):
-    length = len(street_code)
-    if length > 0 and length < 5:
-        diff = 4 - length
-        for i in range(diff):
-            street_code = '0' + street_code
-        return street_code
-    else:
-        return None
-
-
-def format_house_number_for_adrsog1(house_no_dawa):
-    house_no = house_no_dawa
-    length = len(house_no)
-    if length > 0 and length < 5:
-        diff = 4 - length
-        for i in range(diff):
-            house_no = '0' + house_no
-        return house_no
-    else:
-        return None
-
-
-def format_floor_for_adrsog1(floor_dawa):
-    floor = floor_dawa
-    length = len(floor)
-    if length > 0 and length < 3:
-        diff = 2 - length
-        for i in range(diff):
-            floor = '0' + floor
-        return floor
-    else:
-        return None
-
-
-def format_door_for_adrsog1(door_dawa):
-    door = door_dawa
-    length = len(door)
-    if 0 < length < 5:
-        diff = 4 - length
-        for i in range(diff):
-            door = '0' + door
-        return door
-    else:
-        return None
