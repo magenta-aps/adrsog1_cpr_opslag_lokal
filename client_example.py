@@ -32,34 +32,22 @@ test_address = {
     'door': 'mf'
 }
 
-# Get a list of test-cpr numbers which exists the demo environment.
-# Should return ['0707614285', '0103922852']
-adrs01_json_response = get_persons_from_address(
-    dependencies_dict=dependencies,
-    address_dict=test_address,
-    response_format='xml'
-)
-
-#print(adrs01_json_response)
-
-
-# adrs01_xml_response = get_persons_from_address(
+# Return JSON
+# adrs01_json_response = get_persons_from_address(
 #     dependencies_dict=dependencies,
 #     address_dict=test_address,
-#     response_format='xml'
+#     response_format='JSON' # Can also be changed to XML.
 # )
-# test_output = open('output_test.xml', 'w')
-# test_output.write(adrs01_xml_response)
 
-# Pretty print XML
-# 1) $ sudo apt install xmllint
-# 2) $ xmllint -format output_test.xml
-
+# print(adrs01_json_response)
 
 # Returns a list
-# person_numbers_from_adress = get_person_numbers_from_address(
-#     dependencies_dict=dependencies,
-#     address_dict=test_address
-# )
-#
-# print(person_numbers_from_adress)
+person_numbers_from_adress = get_person_numbers_from_address(
+    dependencies_dict=dependencies,
+    address_dict=test_address
+)
+
+print(person_numbers_from_adress)
+
+
+

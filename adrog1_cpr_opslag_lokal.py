@@ -93,9 +93,8 @@ def call_gctp_service_adrsog1(dependencies_dict, address_dict):
                 )
 
         persons_on_address_xml = html.unescape(response.text)
-        print(html.unescape(response.text))
 
-        #return persons_on_address_xml
+        return persons_on_address_xml
 
     else:
 
